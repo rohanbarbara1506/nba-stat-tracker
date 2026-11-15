@@ -37,7 +37,7 @@ ET = ZoneInfo("America/New_York")
 
 # Which games each run checks, based on how long ago the game ended.
 FAST_WINDOW = timedelta(hours=24)       # ended in the last 24 hours: checked every run
-SLOW_HOURS_UTC = {11, 15, 19, 23}       # older games: only on runs during these hours
+SLOW_HOURS_UTC = {11, 15, 19, 23}       # older games: once during each of these hours
 WATCH_WINDOW = timedelta(days=7)        # stop watching 7 days after the game ends
 DISCOVER_DAYS_BACK = 2                  # scoreboard days to scan for newly finished games
 EST_GAME_LENGTH = timedelta(hours=2, minutes=30)
@@ -593,11 +593,11 @@ class Tracker:
 
     # -- checking -----------------------------------------------------------
 
-    def is_due(self, game, now):
+    def is_due(self, game, now, slow_check=False):
         if not game["players"] or game["pending"]:
             return True
         age = now - as_time(game["final_seen_utc"])
-        return age <= FAST_WINDOW or now.hour in SLOW_HOURS_UTC
+        return age <= FAST_WINDOW or slow_check
 
     def fetch_summaries(self, games):
         def load(game):
@@ -787,7 +787,14 @@ class Tracker:
         for game in list(games.values()):
             if now - as_time(game["final_seen_utc"]) > WATCH_WINDOW and not game["pending"]:
                 self.drop_game(games.pop(game["game_id"]))
-        due = [g for g in games.values() if self.is_due(g, now)]
+        # Older games get one check per slow hour, however many runs land in that hour.
+        state = self.load_state()
+        slot = now.strftime("%Y-%m-%dT%H") if now.hour in SLOW_HOURS_UTC else None
+        slow_check = slot is not None and state.get("slow_check") != slot
+        if slow_check:
+            state["slow_check"] = slot
+            self.save_state(state)
+        due = [g for g in games.values() if self.is_due(g, now, slow_check)]
         batches = []
         for game, summary in zip(due, self.fetch_summaries(due)):
             confirmed = self.check_game(game, summary, now)

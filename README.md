@@ -9,8 +9,7 @@ Data comes from ESPN's public NBA feed, because NBA.com's own feeds block script
 
 ## How it works
 
-1. GitHub runs `logger.py` every 15 minutes from 7pm to 5am US Eastern, and once an
-   hour the rest of the day.
+1. GitHub runs `logger.py` every 15 minutes, all day.
 2. Each run looks for games that have finished and saves their box scores.
    - Games that ended in the last 24 hours are checked on every run.
    - Games 1 to 7 days old are checked four times a day.

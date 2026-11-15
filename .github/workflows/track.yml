@@ -2,10 +2,8 @@ name: Track stat corrections
 
 on:
   schedule:
-    # Times are UTC. 00:00-09:59 UTC is 7pm-5am US Eastern (winter): every 15 minutes.
-    - cron: "7,22,37,52 0-9 * * *"
-    # The rest of the day: once an hour.
-    - cron: "7 10-23 * * *"
+    # Every 15 minutes, all day. Offset from the top of the hour, when GitHub's scheduler is busiest.
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
     inputs:
       test_notify:

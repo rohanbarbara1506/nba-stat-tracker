@@ -248,6 +248,11 @@ class TrackerTests(unittest.TestCase):
         self.clock = datetime(2026, 11, 17, 15, 0, tzinfo=timezone.utc)  # 2 days old, slow-check hour
         self.run_after(minutes=7)
         self.assertIn(summary_url, self.fetched)
+        self.run_after(minutes=15)                               # same hour again: already checked
+        self.assertNotIn(summary_url, self.fetched)
+        self.clock = datetime(2026, 11, 17, 19, 0, tzinfo=timezone.utc)  # the next slow-check hour
+        self.run_after(minutes=7)
+        self.assertIn(summary_url, self.fetched)
 
     def test_dropped_after_seven_days(self):
         self.tracker.run_once()
