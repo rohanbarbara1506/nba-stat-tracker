@@ -45,6 +45,8 @@ LIVE_DISCOVERY_WINDOW = timedelta(hours=5)
 MAX_PARALLEL_FETCHES = 8
 MAX_NOTIFICATIONS_PER_DAY = 30
 ISSUE_LABEL = "stat-correction"
+PLAY_OPTIONS_MAX = 6                    # list this many possible plays in a notification, at most
+TWEET_LIMIT = 270                       # X allows 280; emoji count double, so leave room
 
 # Finding posts to reply to (only runs when an X API token is set). X bills per post returned.
 X_SEARCH_URL = "https://api.x.com/2/tweets/search/recent"
@@ -169,6 +171,12 @@ def parse_summary(summary):
                     "stats": stats,
                 }
 
+    try:
+        plays = parse_plays(summary)
+    except (KeyError, IndexError, TypeError, ValueError, AttributeError) as exc:
+        log.warning("Could not read the play list (stat tracking is not affected): %r", exc)
+        plays = []
+
     return {
         "game_id": str(summary["header"]["id"]),
         "start_utc": parse_time(comp["date"]),
@@ -176,7 +184,106 @@ def parse_summary(summary):
         "away": teams["away"],
         "home": teams["home"],
         "players": players,
+        "plays": plays,
     }
+
+
+# ---------------------------------------------------------------------------
+# Finding the play behind a correction
+# ---------------------------------------------------------------------------
+
+def play_time(period, clock):
+    """Q1 5:04, Q4 0:42.8, OT 1:10, 2OT 3:00."""
+    quarter = "Q%d" % period if period <= 4 else ("OT" if period == 5 else "%dOT" % (period - 4))
+    return "%s %s" % (quarter, clock if ":" in clock else "0:" + clock)
+
+
+def parse_plays(summary):
+    """The plays in ESPN's play list that credit a stat: [{when, text, credits: {(player id, stat): amount}}]."""
+    plays = []
+    for raw in summary.get("plays") or []:
+        text = " ".join((raw.get("text") or "").split())
+        lower = text.lower()
+        kind = " ".join(((raw.get("type") or {}).get("text") or "").lower().split())
+        ids = [str(p["athlete"]["id"]) for p in raw.get("participants") or [] if (p.get("athlete") or {}).get("id")]
+        if not ids:
+            continue
+        credits = {}
+        value = to_int(raw.get("scoreValue")) or 0
+        if raw.get("scoringPlay") and value > 0:
+            credits[(ids[0], "points")] = value
+            if kind.startswith("free throw"):
+                credits[(ids[0], "freeThrowsMade")] = 1
+            else:
+                credits[(ids[0], "fieldGoalsMade")] = 1
+                if value == 3:
+                    credits[(ids[0], "threePointFieldGoalsMade")] = 1
+        if "rebound" in kind:
+            credits[(ids[0], "rebounds")] = 1
+            if kind.startswith("offensive"):
+                credits[(ids[0], "offensiveRebounds")] = 1
+            elif kind.startswith("defensive"):
+                credits[(ids[0], "defensiveRebounds")] = 1
+        if "turnover" in lower:
+            credits[(ids[0], "turnovers")] = 1
+        if len(ids) > 1:                            # the second player named gets the steal, assist or block
+            if "steals)" in lower:
+                credits[(ids[1], "steals")] = 1
+            if "assists)" in lower:
+                credits[(ids[1], "assists")] = 1
+            if " blocks " in lower:
+                credits[(ids[1], "blocks")] = 1
+        if credits:
+            period = to_int((raw.get("period") or {}).get("number")) or 0
+            clock = str((raw.get("clock") or {}).get("displayValue") or "")
+            plays.append({"when": play_time(period, clock), "text": text, "credits": credits})
+    return plays
+
+
+def removed_play_options(plays, change, changes):
+    """Plays that could be the one taken away from a player.
+
+    ESPN corrects the box score but leaves its play list as first scored, so the play
+    behind a removed stat is still listed. A play qualifies only if every stat it gave
+    this player was reduced in the same check (a removed offensive rebound lowers both
+    REB and OREB). Returns nothing unless the play list adds up to the old box score.
+    """
+    pid, stat = change["player_id"], change["stat"]
+    credited = [p for p in plays if (pid, stat) in p["credits"]]
+    if change["delta"] >= 0 or sum(p["credits"][(pid, stat)] for p in credited) != change["old"]:
+        return []
+    drops = {(c["player_id"], c["stat"]): -c["delta"] for c in changes if c["delta"] < 0}
+    options = [p for p in credited
+               if all(drops.get(key) == amount for key, amount in p["credits"].items() if key[0] == pid)]
+    # Another player's stat removed in the same check points to a shared play (a turnover and its steal).
+    for key, amount in drops.items():
+        if key[0] != pid:
+            shared = [p for p in options if p["credits"].get(key) == amount]
+            if shared:
+                options = shared
+    return options
+
+
+def attach_plays(changes, plays):
+    """Add the play behind each headline change: 'play' when exactly one fits, 'play_options' for a short list."""
+    if not plays:
+        return
+    for change in changes:
+        if change["stat"] not in HEADLINE_STATS:
+            continue
+        source = change
+        if change["delta"] > 0:
+            # A stat that moved here from one other player comes from that player's play.
+            givers = [c for c in changes if c["stat"] == change["stat"] and c["delta"] == -change["delta"]
+                      and c["player_id"] != change["player_id"]]
+            if len(givers) != 1:
+                continue
+            source = givers[0]
+        options = ["%s, %s" % (p["when"], p["text"]) for p in removed_play_options(plays, source, changes)]
+        if len(options) == 1:
+            change["play"] = options[0]
+        elif 1 < len(options) <= PLAY_OPTIONS_MAX:
+            change["play_options"] = options
 
 
 # ---------------------------------------------------------------------------
@@ -241,6 +348,11 @@ def game_label(game):
 def format_tweet(change, game):
     label = LABELS[change["stat"]]
     away, home = game["away"], game["home"]
+    play_line = ""
+    if change.get("play"):
+        room = TWEET_LIMIT - len(format_tweet(dict(change, play=""), game)) - len("Play: \n\n")
+        play = change["play"] if len(change["play"]) <= room else change["play"][:room - 1].rstrip() + "…"
+        play_line = "Play: %s\n\n" % play if room > 20 else ""
     return (
         "{emoji} NBA Stat Correction | {date}\n"
         "\n"
@@ -250,8 +362,10 @@ def format_tweet(change, game):
         "Now: {new} {label}\n"
         "Was: {old} {label}\n"
         "\n"
+        "{play_line}"
         "#NBA #NBAProps"
     ).format(
+        play_line=play_line,
         emoji="🔴" if change["delta"] < 0 else "🟢",
         date=game_date(game),
         player=change["player_name"], team=change["team"],
@@ -304,6 +418,9 @@ def build_issue(game, corrections, mention=None, extra_lines=None):
         if c.get("note"):
             lines.append("Note: " + c["note"])
         lines += ["**[Post to X](%s)**" % post_link(tweet), "", "```text", tweet, "```", ""]
+        if c.get("play_options"):
+            lines += ["Most likely one of these plays. ESPN doesn't say which, so the post leaves it out:"]
+            lines += ["- " + option for option in c["play_options"]] + [""]
     if minor:
         lines += ["Other changes in the same check (no tweet): " + "; ".join(describe(c) for c in minor), ""]
     lines += extra_lines or []
@@ -553,6 +670,7 @@ class Tracker:
             "player_id": change["player_id"], "player_name": change["player_name"], "team": change["team"],
             "stat": LABELS[change["stat"]], "old": change["old"], "new": change["new"], "delta": change["delta"],
             "headline": change["stat"] in HEADLINE_STATS, "note": change.get("note", ""),
+            "play": change.get("play", ""),
         }
         with open(self.corrections_path, "a", encoding="utf-8") as fh:
             fh.write(json.dumps(record, sort_keys=True, ensure_ascii=False) + "\n")
@@ -631,7 +749,9 @@ class Tracker:
             log.info("Saved starting box score for %s (%d players)", game_label(game), len(new["players"]))
             return []
 
-        changes = {(c["player_id"], c["stat"]): c for c in diff_players(game["players"], new["players"])}
+        found = diff_players(game["players"], new["players"])
+        attach_plays(found, new["plays"])
+        changes = {(c["player_id"], c["stat"]): c for c in found}
 
         # Settle changes seen on an earlier run: still there = confirmed, flipped back = cancelled.
         confirmed, still_pending = [], []

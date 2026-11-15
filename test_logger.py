@@ -67,6 +67,22 @@ EXPECTED_TWEET = ("🔴 NBA Stat Correction | 11/14\n\n"
                   "#NBA #NBAProps")
 
 
+
+def play(period, clock, kind, text, ids, value=0):
+    """One entry of ESPN's play list."""
+    return {"type": {"text": kind}, "text": text, "period": {"number": period},
+            "clock": {"displayValue": clock}, "scoringPlay": value > 0, "scoreValue": value,
+            "participants": [{"athlete": {"id": str(i)}} for i in ids]}
+
+
+def stat_change(pid, stat, old, new, name="Someone"):
+    return {"player_id": str(pid), "player_name": name, "team": "DEN", "stat": stat,
+            "old": old, "new": new, "delta": new - old, "note": ""}
+
+
+GORDON_ASSIST = play(2, "7:41", "Dunk Shot", "Nikola Jokic makes 2-foot dunk (Aaron Gordon assists)", [1, 2], 2)
+
+
 class FakeNotifier:
     owner = "someone"
 
@@ -191,6 +207,26 @@ class TrackerTests(unittest.TestCase):
         self.assertEqual(len(self.notifier.sent), 1)
         self.assertEqual(len(self.records()), 1)
 
+    def test_play_behind_a_correction_reaches_the_post(self):
+        self.summary["plays"] = [GORDON_ASSIST]
+        self.tracker.run_once()
+        self.summary = make_summary(gordon_ast=0)                # his only assist is taken away
+        self.summary["plays"] = [GORDON_ASSIST]                  # ESPN leaves the play list as it was
+        self.clock += timedelta(minutes=15)
+        self.assertEqual(self.tracker.run_once(), [])
+        self.assertEqual(len(self.run_after(gordon_ast=0)), 1)   # confirmed on the next check
+        tweet = ("🔴 NBA Stat Correction | 11/14\n\n"
+                 "Aaron Gordon (DEN): -1 AST\n"
+                 "DEN 112 @ LAL 118 | Final\n\n"
+                 "Now: 0 AST\n"
+                 "Was: 1 AST\n\n"
+                 "Play: Q2 7:41, Nikola Jokic makes 2-foot dunk (Aaron Gordon assists)\n\n"
+                 "#NBA #NBAProps")
+        body = self.notifier.sent[0][1]
+        self.assertIn(tweet, body)
+        self.assertIn(logger.post_link(tweet), body)
+        self.assertEqual(self.records()[0]["play"], "Q2 7:41, Nikola Jokic makes 2-foot dunk (Aaron Gordon assists)")
+
     def test_flipped_back_stat_is_cancelled_not_sent(self):
         self.tracker.run_once()
         self.run_after(jokic_ast=9)
@@ -270,6 +306,89 @@ class TrackerTests(unittest.TestCase):
         self.tracker.run_once()                                  # 3 hours after tip: just ended
         self.assertIn('"final_seen_utc": "2026-11-15T03:00:00+00:00"', self.game_file())
 
+
+
+class PlayFinderTests(unittest.TestCase):
+    def plays(self, *raw):
+        return logger.parse_plays({"plays": list(raw)})
+
+    def found(self, plays, *changes):
+        changes = list(changes)
+        logger.attach_plays(changes, plays)
+        return [(c.get("play"), c.get("play_options")) for c in changes]
+
+    def test_play_list_credits_the_right_players(self):
+        plays = self.plays(
+            play(1, "5:04", "Jump Shot", "Jamal Murray makes 26-foot three point jumper (Nikola Jokic assists)", [7, 1], 3),
+            play(4, "42.8", "Layup Shot", "LeBron James blocks Nikola Jokic's layup", [1, 4]),
+            play(5, "1:10", "Bad Pass\nTurnover", "Nikola Jokic bad pass\nturnover (LeBron James steals)", [1, 4]),
+            play(2, "3:00", "Free Throw - 1 of 2", "Nikola Jokic makes free throw 1 of 2", [1], 1),
+            play(2, "2:00", "Offensive Rebound", "Nikola Jokic offensive rebound", [1]),
+            play(2, "1:00", "Substitution", "Aaron Gordon enters the game for Nikola Jokic", [2, 1]),
+            play(2, "0:30", "Full Timeout", "Nuggets Full timeout", []))
+        self.assertEqual([p["when"] for p in plays], ["Q1 5:04", "Q4 0:42.8", "OT 1:10", "Q2 3:00", "Q2 2:00"])
+        self.assertEqual(plays[0]["credits"], {("7", "points"): 3, ("7", "fieldGoalsMade"): 1,
+                                               ("7", "threePointFieldGoalsMade"): 1, ("1", "assists"): 1})
+        self.assertEqual(plays[1]["credits"], {("4", "blocks"): 1})
+        self.assertEqual(plays[2]["credits"], {("1", "turnovers"): 1, ("4", "steals"): 1})
+        self.assertEqual(plays[2]["text"], "Nikola Jokic bad pass turnover (LeBron James steals)")
+        self.assertEqual(plays[3]["credits"], {("1", "points"): 1, ("1", "freeThrowsMade"): 1})
+        self.assertEqual(plays[4]["credits"], {("1", "rebounds"): 1, ("1", "offensiveRebounds"): 1})
+
+    def test_two_possible_plays_stay_out_of_the_post(self):
+        plays = self.plays(play(1, "9:00", "Lost Ball Turnover", "A lost ball turnover (B steals)", [1, 2]),
+                           play(3, "4:00", "Bad Pass Turnover", "C bad pass turnover (B steals)", [3, 2]))
+        change = stat_change(2, "steals", 2, 1)
+        self.assertEqual(self.found(plays, change), [(None, [
+            "Q1 9:00, A lost ball turnover (B steals)", "Q3 4:00, C bad pass turnover (B steals)"])])
+        game = logger.parse_summary(make_summary())
+        self.assertNotIn("Play:", logger.format_tweet(change, game))
+        change["minutes_after_final"] = 30
+        body = logger.build_issue(game, [change])[1]
+        self.assertIn("- Q3 4:00, C bad pass turnover (B steals)", body)
+        self.assertIn("Most likely one of these plays", body)
+
+    def test_stats_removed_together_point_to_their_shared_play(self):
+        plays = self.plays(play(1, "9:00", "Lost Ball Turnover", "A lost ball turnover (B steals)", [1, 2]),
+                           play(2, "8:00", "Traveling", "A traveling turnover", [1]),
+                           play(3, "4:00", "Bad Pass Turnover", "C bad pass turnover (B steals)", [3, 2]))
+        shared = "Q1 9:00, A lost ball turnover (B steals)"
+        self.assertEqual(self.found(plays, stat_change(1, "turnovers", 2, 1), stat_change(2, "steals", 2, 1)),
+                         [(shared, None), (shared, None)])
+
+    def test_removed_offensive_rebound_rules_out_defensive_ones(self):
+        plays = self.plays(play(1, "9:00", "Defensive Rebound", "A defensive rebound", [1]),
+                           play(2, "8:00", "Offensive Rebound", "A offensive rebound", [1]),
+                           play(3, "4:00", "Defensive Rebound", "A defensive rebound", [1]))
+        found = self.found(plays, stat_change(1, "rebounds", 3, 2), stat_change(1, "offensiveRebounds", 1, 0))
+        self.assertEqual(found, [("Q2 8:00, A offensive rebound", None), (None, None)])
+
+    def test_no_play_when_the_list_does_not_add_up_to_the_old_box_score(self):
+        plays = self.plays(play(1, "9:00", "Lost Ball Turnover", "A lost ball turnover (B steals)", [1, 2]))
+        self.assertEqual(self.found(plays, stat_change(2, "steals", 2, 1)), [(None, None)])
+        self.assertEqual(self.found([], stat_change(2, "steals", 1, 0)), [(None, None)])
+
+    def test_moved_stat_uses_the_play_it_came_from(self):
+        plays = self.plays(GORDON_ASSIST)
+        moved = "Q2 7:41, Nikola Jokic makes 2-foot dunk (Aaron Gordon assists)"
+        self.assertEqual(self.found(plays, stat_change(2, "assists", 1, 0), stat_change(5, "assists", 3, 4)),
+                         [(moved, None), (moved, None)])
+        self.assertEqual(self.found(plays, stat_change(5, "assists", 3, 4)), [(None, None)])     # added from nowhere
+
+    def test_three_changed_to_a_two_is_not_blamed_on_a_free_throw(self):
+        plays = self.plays(play(1, "9:00", "Jump Shot", "A makes 25-foot three point jumper", [1], 3),
+                           play(2, "8:00", "Free Throw - 1 of 1", "A makes free throw 1 of 1", [1], 1))
+        found = self.found(plays, stat_change(1, "points", 4, 3), stat_change(1, "threePointFieldGoalsMade", 1, 0))
+        self.assertEqual(found[0], (None, None))
+
+    def test_long_play_is_trimmed_so_the_post_fits(self):
+        game = logger.parse_summary(make_summary())
+        change = stat_change(1, "assists", 10, 9, "Nikola Jokic")
+        change["play"] = "Q1 5:04, " + "a very long description of the play " * 10
+        tweet = logger.format_tweet(change, game)
+        self.assertLessEqual(len(tweet), logger.TWEET_LIMIT)
+        self.assertIn("Play: Q1 5:04, a very long", tweet)
+        self.assertTrue(tweet.endswith("…\n\n#NBA #NBAProps"))
 
 
 class FakeX:

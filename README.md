@@ -24,6 +24,19 @@ Data comes from ESPN's public NBA feed, because NBA.com's own feeds block script
 Main stats (PTS, REB, AST, STL, BLK, 3PM, TOV) get a tweet. Other stat changes
 (FGA, FTA, OREB, DREB, PF and so on) are logged as minor, with no tweet.
 
+## The play behind a correction
+
+ESPN corrects the box score but leaves its play-by-play list as the game was first scored.
+So when a stat is taken away, the play it came from is still in that list. The tracker
+looks for it:
+
+- If exactly one play fits, the tweet gets a line such as `Play: Q3 2:03, ...`.
+- If two to six plays fit, the tweet stays as it is and the notification lists them,
+  so you can see what it might have been.
+- If the play list doesn't add up to the box score from before the change, nothing is added.
+
+A stat that is added only gets a play when it clearly moved from one other player.
+
 ## Finding posts to reply to
 
 This part is optional and only runs when the repository has a secret named `X_BEARER_TOKEN`
