@@ -1,6 +1,7 @@
 """Tests for logger.py using fake ESPN data. Run: python3 -m unittest test_logger"""
 
 import copy
+import io
 import json
 import os
 import shutil
@@ -380,7 +381,39 @@ class ReplyFinderTests(unittest.TestCase):
         self.run_after(jokic_ast=9)
         self.run_after()
         self.assertEqual(self.x.queries, [])
-        self.assertEqual(len(self.notifier.sent), 1)          # the correction still goes out
+        titles = [t for t, _, _ in self.notifier.sent]
+        self.assertEqual(len([t for t in titles if "Jokic" in t]), 1)     # the correction still goes out
+        self.assertEqual(titles.count("X search limit reached"), 1)      # and the owner is told once
+
+    def test_hitting_a_limit_sends_one_alert(self):
+        self.tracker.run_once()
+        state = self.state()
+        state["x_reads"] = {"day": "2026-11-15", "day_count": logger.MAX_X_READS_PER_DAY,
+                            "month": "2026-11", "month_count": 60, "total": 60}
+        self.tracker.save_state(state)
+        self.clock = datetime(2026, 11, 15, 15, 0, tzinfo=timezone.utc)
+        self.run_after(minutes=7)                             # daily search is due but the limit is reached
+        self.run_after(minutes=15)
+        self.assertEqual(self.x.queries, [])
+        alerts = [t for t, _, _ in self.notifier.sent if t == "X search limit reached"]
+        self.assertEqual(len(alerts), 1)
+        self.assertIn("Posts read today: 40 (limit 40)", self.notifier.sent[0][1])
+
+    def test_token_never_appears_in_logs_when_x_rejects_a_search(self):
+        def refuse(request, timeout=None):
+            raise urllib.error.HTTPError(request.full_url, 401, "Unauthorized", {},
+                                         io.BytesIO(b'{"title":"Unauthorized","detail":"bad token"}'))
+
+        real = logger.urllib.request.urlopen
+        logger.urllib.request.urlopen = refuse
+        try:
+            with self.assertLogs("stat-tracker", level="WARNING") as captured:
+                posts = logger.XSearch("SECRET-TOKEN-VALUE").search("Jokic assist")
+        finally:
+            logger.urllib.request.urlopen = real
+        self.assertEqual(posts, [])
+        self.assertNotIn("SECRET-TOKEN-VALUE", "\n".join(captured.output))
+        self.assertIn("401", "\n".join(captured.output))
 
     def test_monthly_read_limit_stops_searches(self):
         self.tracker.run_once()

@@ -704,6 +704,29 @@ class Tracker:
             log.warning("Could not check for an existing notification, so skipping the X search: %s", exc)
             return True
 
+    def limit_alert(self, state, day, month, day_count, month_count):
+        """Tell the owner, once, when a search limit stops the bot. Hitting one is unusual and worth a look."""
+        monthly = month_count + X_SEARCH_SIZE > MAX_X_READS_PER_MONTH
+        key = "x-limit-" + (month if monthly else day)
+        if state.get("limit_alert") == key:
+            return
+        state["limit_alert"] = key
+        lines = [
+            "The bot has stopped searching X for the rest of %s because it reached its built-in limit." % (
+                "this month" if monthly else "today"),
+            "",
+            "- Posts read today: %d (limit %d)" % (day_count, MAX_X_READS_PER_DAY),
+            "- Posts read this month: %d (limit %d), about $%.2f" % (
+                month_count, MAX_X_READS_PER_MONTH, month_count * X_READ_PRICE),
+            "",
+            "Game tracking and correction notifications are not affected. Searches start again by themselves.",
+            "The bot normally reads far fewer posts than this, so check the balance in the X console.",
+        ]
+        if self.notifier and self.notifier.owner:
+            lines.append("cc @" + self.notifier.owner)
+        lines.append("<!-- correction-key:%s -->" % key)
+        state["outbox"].append({"title": "X search limit reached", "body": "\n".join(lines), "key": key})
+
     def find_posts(self, state, query, start_time, now):
         """Search X for posts to reply to, within the daily and monthly read limits."""
         if self.x_search is None or self.counts["x_searches"] >= MAX_X_SEARCHES_PER_RUN:
@@ -714,6 +737,7 @@ class Tracker:
         month_count = reads["month_count"] if reads["month"] == month else 0
         if day_count + X_SEARCH_SIZE > MAX_X_READS_PER_DAY or month_count + X_SEARCH_SIZE > MAX_X_READS_PER_MONTH:
             log.warning("X read limit reached (%d today, %d this month); skipping search", day_count, month_count)
+            self.limit_alert(state, day, month, day_count, month_count)
             return []
         earliest = now - timedelta(days=6, hours=20)            # X only searches the last 7 days
         posts = self.x_search.search(skip_own_posts(query), max(start_time, earliest))
