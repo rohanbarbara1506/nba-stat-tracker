@@ -72,6 +72,11 @@ class FakeNotifier:
     def __init__(self):
         self.sent, self.fail = [], False
 
+    def already_sent(self, key):
+        if self.fail:
+            raise urllib.error.URLError("down")
+        return key in [k for _, _, k in self.sent]
+
     def send(self, title, body, key):
         if self.fail:
             raise urllib.error.URLError("down")
@@ -325,6 +330,38 @@ class ReplyFinderTests(unittest.TestCase):
         self.assertIn("Search X for posts about this", body)
         self.assertEqual(self.state()["x_reads"]["day_count"], 2)
         self.assertEqual(self.state()["x_reads"]["total"], 2)
+
+    def test_lost_records_do_not_buy_the_same_search_twice(self):
+        self.tracker.run_once()
+        self.run_after(jokic_ast=9)
+        game_path = os.path.join(self.tracker.games_dir, "401.json")
+        with open(game_path) as fh:
+            before_confirming = fh.read()
+        self.run_after()                                      # confirmed: one search, one notification
+        self.assertEqual((len(self.x.queries), len(self.notifier.sent)), (1, 1))
+        for _ in range(3):                                    # as if GitHub failed to save the records
+            with open(game_path, "w") as fh:
+                fh.write(before_confirming)
+            self.run_after()
+        self.assertEqual((len(self.x.queries), len(self.notifier.sent)), (1, 1))
+
+    def test_no_search_when_github_cannot_be_checked(self):
+        self.tracker.run_once()
+        self.run_after(jokic_ast=9)
+        self.notifier.fail = True
+        self.run_after()
+        self.assertEqual(self.x.queries, [])
+
+    def test_daily_search_is_not_repeated_if_its_notification_exists(self):
+        self.tracker.run_once()
+        self.clock = datetime(2026, 11, 15, 15, 0, tzinfo=timezone.utc)
+        self.run_after(minutes=7)
+        self.assertEqual(len(self.x.queries), 1)
+        state = self.state()
+        state["sweep_date"] = ""                              # as if the saved record was lost
+        self.tracker.save_state(state)
+        self.run_after(minutes=15)
+        self.assertEqual(len(self.x.queries), 1)
 
     def test_no_token_means_no_search_but_still_a_free_search_link(self):
         self.tracker.x_search = None

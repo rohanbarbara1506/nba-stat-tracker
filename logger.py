@@ -690,6 +690,20 @@ class Tracker:
 
     # -- notifying ----------------------------------------------------------
 
+    def was_sent(self, key):
+        """True if this notification already exists on GitHub, or if that can't be checked.
+
+        Asked before every paid X search, so a search is never bought twice for the same
+        notification, even if a run's saved records were lost.
+        """
+        if self.notifier is None:
+            return False
+        try:
+            return self.notifier.already_sent(key)
+        except (urllib.error.URLError, OSError, ValueError) as exc:
+            log.warning("Could not check for an existing notification, so skipping the X search: %s", exc)
+            return True
+
     def find_posts(self, state, query, start_time, now):
         """Search X for posts to reply to, within the daily and monthly read limits."""
         if self.x_search is None or self.counts["x_searches"] >= MAX_X_SEARCHES_PER_RUN:
@@ -729,6 +743,8 @@ class Tracker:
         if self.x_search is None or not (due or force):
             return
         state["sweep_date"] = today
+        if not force and self.was_sent("sweep-" + today):
+            return
         posts = self.find_posts(state, SWEEP_QUERY, now - timedelta(hours=24), now)
         if not posts:
             return
@@ -752,7 +768,8 @@ class Tracker:
         mention = self.notifier.owner if self.notifier else None
         for game, corrections in batches:
             if any(c["stat"] in HEADLINE_STATS for c in corrections):
-                extra = self.reply_ideas(state, game, corrections, now)
+                key = build_issue(game, corrections, mention)[2]
+                extra = [] if self.was_sent(key) else self.reply_ideas(state, game, corrections, now)
                 title, body, key = build_issue(game, corrections, mention, extra)
                 state["outbox"].append({"title": title, "body": body, "key": key})
         self.daily_sweep(state, games or {}, now, force_sweep)
