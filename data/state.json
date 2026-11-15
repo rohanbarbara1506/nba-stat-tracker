@@ -1,0 +1,13 @@
+{
+ "notify_count": 1,
+ "notify_date": "2026-11-15",
+ "outbox": [],
+ "sweep_date": "2026-11-15",
+ "x_reads": {
+  "day": "2026-11-15",
+  "day_count": 10,
+  "month": "2026-11",
+  "month_count": 10,
+  "total": 10
+ }
+}

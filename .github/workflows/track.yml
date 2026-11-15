@@ -1,0 +1,63 @@
+name: Track stat corrections
+
+on:
+  schedule:
+    # Times are UTC. 00:00-09:59 UTC is 7pm-5am US Eastern (winter): every 15 minutes.
+    - cron: "7,22,37,52 0-9 * * *"
+    # The rest of the day: once an hour.
+    - cron: "7 10-23 * * *"
+  workflow_dispatch:
+    inputs:
+      test_notify:
+        description: "Send one sample notification instead of checking games"
+        type: boolean
+        default: false
+      test_search:
+        description: "Run today's X search now (reads up to 10 posts)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: tracker
+  cancel-in-progress: false
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Optional. When this secret exists, the bot searches X for posts to reply to.
+      X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+      # Optional. The account's X handle, so searches skip its own posts. GitHub hides it in logs.
+      X_HANDLE: ${{ secrets.X_HANDLE }}
+    steps:
+      # Pinned to an exact version of GitHub's own checkout action (v4).
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Send test notification
+        if: ${{ inputs.test_notify }}
+        run: python3 logger.py test-notify
+
+      - name: Run today's X search now
+        if: ${{ inputs.test_search }}
+        run: python3 logger.py test-search
+
+      - name: Check games
+        if: ${{ !inputs.test_notify && !inputs.test_search }}
+        run: python3 logger.py once
+
+      - name: Save changed data files
+        if: ${{ !inputs.test_notify }}
+        run: |
+          git add -A data logs
+          if ! git diff --cached --quiet; then
+            git -c user.name="stat-tracker-bot" \
+                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+                commit -m "Update tracked games"
+            git push || (git pull --rebase && git push)
+          fi

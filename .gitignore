@@ -1,0 +1,10 @@
+# Left over from the first version that ran on this Mac
+data/tracker.db
+data/raw/
+logs/logger.log
+
+__pycache__/
+
+# Profile pictures and other account artwork stay on this computer
+branding/
+.DS_Store
