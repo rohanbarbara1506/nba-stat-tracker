@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-15T03:00:00+00:00",
  "away": {"abbr": "DAL", "name": "Mavericks", "score": 117},
  "home": {"abbr": "CLE", "name": "Cavaliers", "score": 127},
- "pending": [{"delta": -1, "detected_utc": "2026-11-15T18:58:26+00:00", "minutes_after_final": 958, "new": 3, "note": "", "old": 4, "player_id": "4278078", "player_name": "P.J. Washington", "stat": "rebounds", "team": "DAL"}, {"delta": -1, "detected_utc": "2026-11-15T18:58:26+00:00", "minutes_after_final": 958, "new": 9, "note": "", "old": 10, "player_id": "4278078", "player_name": "P.J. Washington", "stat": "fieldGoalsAttempted", "team": "DAL"}, {"delta": -1, "detected_utc": "2026-11-15T18:58:26+00:00", "minutes_after_final": 958, "new": 1, "note": "", "old": 2, "player_id": "4278078", "player_name": "P.J. Washington", "stat": "offensiveRebounds", "team": "DAL"}],
+ "pending": [],
  "players": {
   "4701233": {"name": "Craig Porter Jr.", "stats": {"assists": 6, "blocks": 1, "defensiveRebounds": 5, "fieldGoalsAttempted": 6, "fieldGoalsMade": 3, "fouls": 0, "freeThrowsAttempted": 3, "freeThrowsMade": 3, "offensiveRebounds": 4, "points": 9, "rebounds": 9, "steals": 1, "threePointFieldGoalsAttempted": 1, "threePointFieldGoalsMade": 0, "turnovers": 5}, "team": "CLE"},
   "4066328": {"name": "Jarrett Allen", "stats": {}, "team": "CLE"},
