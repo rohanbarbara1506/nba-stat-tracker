@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-16T04:36:39+00:00",
  "away": {"abbr": "OKC", "name": "Thunder", "score": 125},
  "home": {"abbr": "SAC", "name": "Kings", "score": 103},
- "pending": [{"delta": -1, "detected_utc": "2026-11-16T04:51:12+00:00", "minutes_after_final": 14, "new": 2, "note": "", "old": 3, "player_id": "4279318", "player_name": "Daeqwon Plowden", "stat": "rebounds", "team": "SAC"}, {"delta": -1, "detected_utc": "2026-11-16T04:51:12+00:00", "minutes_after_final": 14, "new": 2, "note": "", "old": 3, "player_id": "4279318", "player_name": "Daeqwon Plowden", "stat": "defensiveRebounds", "team": "SAC"}],
+ "pending": [],
  "players": {
   "5174983": {"name": "Aday Mara", "stats": {"assists": 3, "blocks": 0, "defensiveRebounds": 5, "fieldGoalsAttempted": 11, "fieldGoalsMade": 8, "fouls": 4, "freeThrowsAttempted": 0, "freeThrowsMade": 0, "offensiveRebounds": 8, "points": 16, "rebounds": 13, "steals": 0, "threePointFieldGoalsAttempted": 0, "threePointFieldGoalsMade": 0, "turnovers": 4}, "team": "OKC"},
   "4900671": {"name": "Ajay Mitchell", "stats": {"assists": 5, "blocks": 0, "defensiveRebounds": 2, "fieldGoalsAttempted": 14, "fieldGoalsMade": 6, "fouls": 3, "freeThrowsAttempted": 1, "freeThrowsMade": 1, "offensiveRebounds": 1, "points": 14, "rebounds": 3, "steals": 2, "threePointFieldGoalsAttempted": 4, "threePointFieldGoalsMade": 1, "turnovers": 1}, "team": "OKC"},
