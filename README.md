@@ -9,7 +9,9 @@ Data comes from ESPN's public NBA feed, because NBA.com's own feeds block script
 
 ## How it works
 
-1. GitHub runs `logger.py` every 15 minutes, all day.
+1. GitHub runs `logger.py` every 15 minutes, all day. Each run waits about 15 minutes and
+   then starts the next one, because GitHub's own scheduler only fires a few times a day.
+   The scheduler is still there as a safety net: it restarts the chain if it ever stops.
 2. Each run looks for games that have finished and saves their box scores.
    - Games that ended in the last 24 hours are checked on every run.
    - Games 1 to 7 days old are checked four times a day.
@@ -78,7 +80,8 @@ repository's history is a record of every box score change.
 - **Run it right now:** Actions tab > "Track stat corrections" > "Run workflow".
 - **Send a test notification:** same button, with "Send one sample notification" ticked.
 - **Pause it:** Actions tab > "Track stat corrections" > "..." menu > "Disable workflow".
-  Turn it back on the same way.
+  That also stops the chain of runs. Turn it back on the same way, then press
+  "Run workflow" once to start the chain again.
 
 On this computer, get the latest data and print a summary:
 

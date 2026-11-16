@@ -2,7 +2,8 @@ name: Track stat corrections
 
 on:
   schedule:
-    # Every 15 minutes, all day. Offset from the top of the hour, when GitHub's scheduler is busiest.
+    # GitHub's own scheduler only fires this a few times a day, so it is the safety net:
+    # it restarts the chain below if the chain ever stops.
     - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
     inputs:
@@ -15,18 +16,20 @@ on:
         type: boolean
         default: false
 
-permissions:
-  contents: write
-  issues: write
-
-concurrency:
-  group: tracker
-  cancel-in-progress: false
+# Each job below asks for only the access it needs.
+permissions: {}
 
 jobs:
   track:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: write
+      issues: write
+    # One check at a time, so two runs never save data files over each other.
+    concurrency:
+      group: tracker
+      cancel-in-progress: false
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Optional. When this secret exists, the bot searches X for posts to reply to.
@@ -59,3 +62,30 @@ jobs:
                 commit -m "Update tracked games"
             git push || (git pull --rebase && git push)
           fi
+
+  # The chain: every run waits about 15 minutes and then starts the next run, so the bot
+  # keeps checking without relying on GitHub's scheduler. To stop it, disable this workflow.
+  next:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Wait for the next check
+        run: sleep 860
+
+      - name: Start the next run
+        run: |
+          # If a newer run is already going (the scheduler or a manual start), it carries the
+          # chain on and this one stops, so there is only ever one chain.
+          newer=$(gh run list --workflow track.yml --limit 30 --json databaseId,status \
+            --jq "[.[] | select(.databaseId > ${GITHUB_RUN_ID} and .status != \"completed\")] | length" || echo 0)
+          if [ "${newer:-0}" -gt 0 ]; then
+            echo "A newer run is already going. It will start the next one."
+            exit 0
+          fi
+          gh workflow run track.yml --ref "${GITHUB_REF_NAME}"
+          echo "Started the next run."
