@@ -28,16 +28,21 @@ Main stats (PTS, REB, AST, STL, BLK, 3PM, TOV) get a tweet. Other stat changes
 
 ## The play behind a correction
 
-ESPN corrects the box score but leaves its play-by-play list as the game was first scored.
-So when a stat is taken away, the play it came from is still in that list. The tracker
-looks for it:
+ESPN's game feed has a play-by-play list. The tracker saves a copy of it with each game
+(`data/plays/`) and uses it to work out which play a correction came from:
+
+- **ESPN corrected its play list too** (usual for corrections soon after the game): the
+  tracker compares the saved copy with the new list. The play that was removed, added or
+  rescored is the one.
+- **ESPN only corrected the box score** (seen with next-day corrections): the play behind a
+  removed stat is still in the list, so the tracker narrows it down from there.
+
+Then:
 
 - If exactly one play fits, the tweet gets a line such as `Play: Q3 2:03, ...`.
 - If two to six plays fit, the tweet stays as it is and the notification lists them,
   so you can see what it might have been.
-- If the play list doesn't add up to the box score from before the change, nothing is added.
-
-A stat that is added only gets a play when it clearly moved from one other player.
+- If neither list adds up to the box score, nothing is added.
 
 ## Finding posts to reply to
 
@@ -65,6 +70,7 @@ To turn it off, delete that secret.
 | File | What's in it |
 | --- | --- |
 | `data/games/` | One file per game being watched, with each player's last known stats |
+| `data/plays/` | The saved play-by-play list for each game being watched |
 | `data/corrections.jsonl` | Every confirmed or cancelled correction, one per line |
 | `logs/corrections.log` | The draft tweet for each confirmed correction |
 | `data/state.json` | Notifications waiting to be sent and today's count |

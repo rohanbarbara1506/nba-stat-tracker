@@ -83,6 +83,10 @@ def stat_change(pid, stat, old, new, name="Someone"):
 GORDON_ASSIST = play(2, "7:41", "Dunk Shot", "Nikola Jokic makes 2-foot dunk (Aaron Gordon assists)", [1, 2], 2)
 
 
+GORDON_ASSIST_2 = play(3, "1:15", "Jump Shot", "LeBron James makes 18-foot jumper (Aaron Gordon assists)", [4, 2], 2)
+JOKIC_REBOUND = play(1, "9:30", "Defensive Rebound", "Nikola Jokic defensive rebound", [1])
+
+
 class FakeNotifier:
     owner = "someone"
 
@@ -226,6 +230,51 @@ class TrackerTests(unittest.TestCase):
         self.assertIn(tweet, body)
         self.assertIn(logger.post_link(tweet), body)
         self.assertEqual(self.records()[0]["play"], "Q2 7:41, Nikola Jokic makes 2-foot dunk (Aaron Gordon assists)")
+
+    def with_plays(self, *plays, **summary_args):
+        self.summary = make_summary(**summary_args)
+        self.summary["plays"] = list(plays)
+
+    def plays_file(self):
+        with open(os.path.join(self.tracker.plays_dir, "401.json")) as fh:
+            return fh.read()
+
+    def test_play_espn_removes_from_its_list_is_named(self):
+        self.with_plays(JOKIC_REBOUND, GORDON_ASSIST, GORDON_ASSIST_2, gordon_ast=2)
+        self.tracker.run_once()                                  # saves the box score and the play list
+        self.assertIn("LeBron James makes 18-foot jumper", self.plays_file())
+        self.with_plays(JOKIC_REBOUND, GORDON_ASSIST, gordon_ast=1)      # ESPN drops the stat and its play
+        self.clock += timedelta(minutes=15)
+        self.assertEqual(self.tracker.run_once(), [])
+        self.assertIn("LeBron James makes 18-foot jumper", self.plays_file())    # kept until it is settled
+        self.clock += timedelta(minutes=15)
+        self.assertEqual(len(self.tracker.run_once()), 1)
+        self.assertIn("Play: Q3 1:15, LeBron James makes 18-foot jumper (Aaron Gordon assists)\n\n#NBA",
+                      self.notifier.sent[0][1])
+        self.assertNotIn("one of these plays", self.notifier.sent[0][1])
+        self.assertNotIn("LeBron James makes 18-foot jumper", self.plays_file())  # now matches the new box score
+
+    def test_play_list_corrected_a_check_later_still_names_the_play(self):
+        self.with_plays(JOKIC_REBOUND, GORDON_ASSIST, GORDON_ASSIST_2, gordon_ast=2)
+        self.tracker.run_once()
+        self.with_plays(JOKIC_REBOUND, GORDON_ASSIST, GORDON_ASSIST_2, gordon_ast=1)   # box score first
+        self.clock += timedelta(minutes=15)
+        self.tracker.run_once()
+        self.assertIn('"play_options"', self.game_file())        # two plays fit so far
+        self.with_plays(JOKIC_REBOUND, GORDON_ASSIST_2, gordon_ast=1)                  # then the play list
+        self.clock += timedelta(minutes=15)
+        self.tracker.run_once()
+        body = self.notifier.sent[0][1]
+        self.assertIn("Play: Q2 7:41, Nikola Jokic makes 2-foot dunk (Aaron Gordon assists)", body)
+        self.assertNotIn("one of these plays", body)
+
+    def test_dropped_game_takes_its_play_list_with_it(self):
+        self.with_plays(JOKIC_REBOUND)
+        self.tracker.run_once()
+        self.assertTrue(os.path.exists(os.path.join(self.tracker.plays_dir, "401.json")))
+        self.clock += timedelta(days=8)
+        self.tracker.run_once()
+        self.assertEqual(os.listdir(self.tracker.plays_dir), [])
 
     def test_flipped_back_stat_is_cancelled_not_sent(self):
         self.tracker.run_once()
@@ -380,6 +429,46 @@ class PlayFinderTests(unittest.TestCase):
                            play(2, "8:00", "Free Throw - 1 of 1", "A makes free throw 1 of 1", [1], 1))
         found = self.found(plays, stat_change(1, "points", 4, 3), stat_change(1, "threePointFieldGoalsMade", 1, 0))
         self.assertEqual(found[0], (None, None))
+
+    def test_rebound_given_to_someone_else_names_the_play_for_both(self):
+        shared = play(2, "6:56", "Defensive Rebound", "B defensive rebound", [2])
+        before = self.plays(play(1, "9:00", "Defensive Rebound", "A defensive rebound", [1]),
+                            play(2, "6:56", "Defensive Rebound", "A defensive rebound", [1]), )
+        after = self.plays(play(1, "9:00", "Defensive Rebound", "A defensive rebound", [1]), shared)
+        changes = [stat_change(1, "rebounds", 2, 1), stat_change(2, "rebounds", 0, 1)]
+        logger.attach_plays(changes, after, before)
+        self.assertEqual([c.get("play") for c in changes],
+                         ["Q2 6:56, A defensive rebound", "Q2 6:56, B defensive rebound"])
+
+    def test_rescored_shot_is_named_with_its_new_description(self):
+        before = self.plays(play(1, "9:00", "Jump Shot", "A makes 25-foot three point jumper", [1], 3),
+                            play(2, "8:00", "Free Throw - 1 of 1", "A makes free throw 1 of 1", [1], 1))
+        after = self.plays(play(1, "9:00", "Jump Shot", "A makes 22-foot jumper", [1], 2),
+                           play(2, "8:00", "Free Throw - 1 of 1", "A makes free throw 1 of 1", [1], 1))
+        changes = [stat_change(1, "points", 4, 3), stat_change(1, "threePointFieldGoalsMade", 1, 0)]
+        logger.attach_plays(changes, after, before)
+        self.assertEqual(changes[0].get("play"), "Q1 9:00, A makes 22-foot jumper")
+        self.assertEqual(changes[1].get("play"), "Q1 9:00, A makes 25-foot three point jumper")
+
+    def test_saved_list_that_does_not_add_up_is_not_trusted(self):
+        before = self.plays(play(1, "9:00", "Defensive Rebound", "A defensive rebound", [1]))
+        after = self.plays(play(3, "2:00", "Defensive Rebound", "A defensive rebound", [1]))
+        changes = [stat_change(1, "rebounds", 3, 2)]
+        logger.attach_plays(changes, after, before)
+        self.assertEqual((changes[0].get("play"), changes[0].get("play_options")), (None, None))
+
+    def test_play_list_survives_saving_and_loading(self):
+        folder = tempfile.mkdtemp()
+        try:
+            tracker = logger.Tracker(folder)
+            plays = self.plays(GORDON_ASSIST, JOKIC_REBOUND)
+            tracker.save_plays({"game_id": "9"}, plays)
+            self.assertEqual(tracker.load_plays({"game_id": "9"}), plays)
+            self.assertIsNone(tracker.load_plays({"game_id": "10"}))
+            tracker.save_plays({"game_id": "9"}, [])             # an empty list never replaces a saved one
+            self.assertEqual(tracker.load_plays({"game_id": "9"}), plays)
+        finally:
+            shutil.rmtree(folder)
 
     def test_long_play_is_trimmed_so_the_post_fits(self):
         game = logger.parse_summary(make_summary())

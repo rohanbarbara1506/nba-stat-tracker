@@ -26,6 +26,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
@@ -240,11 +241,35 @@ def parse_plays(summary):
     return plays
 
 
+def changed_play_options(before, after, change):
+    """Plays ESPN took out of, added to, or rescored in its play list for this stat.
+
+    Used when ESPN corrected its play list along with the box score: the saved list adds
+    up to the old stat and the new list to the new one, so the difference is the play.
+    """
+    key = (change["player_id"], change["stat"])
+    if not before or not after:
+        return []
+    if (sum(p["credits"].get(key, 0) for p in before) != change["old"]
+            or sum(p["credits"].get(key, 0) for p in after) != change["new"]):
+        return []
+    old = Counter((p["when"], p["text"], p["credits"][key]) for p in before if key in p["credits"])
+    new = Counter((p["when"], p["text"], p["credits"][key]) for p in after if key in p["credits"])
+    gone, came = list((old - new).elements()), list((new - old).elements())
+    if len(gone) == len(came) == 1 and gone[0][0] == came[0][0]:
+        picked = came                               # same moment, rescored (a three changed to a two)
+    elif change["delta"] < 0:
+        picked = gone if not came else []
+    else:
+        picked = came if not gone else []
+    return [{"when": when, "text": text} for when, text, _ in picked]
+
+
 def removed_play_options(plays, change, changes):
     """Plays that could be the one taken away from a player.
 
-    ESPN corrects the box score but leaves its play list as first scored, so the play
-    behind a removed stat is still listed. A play qualifies only if every stat it gave
+    Used when ESPN corrected the box score but left its play list as first scored, so the
+    play behind a removed stat is still listed. A play qualifies only if every stat it gave
     this player was reduced in the same check (a removed offensive rebound lowers both
     REB and OREB). Returns nothing unless the play list adds up to the old box score.
     """
@@ -264,24 +289,29 @@ def removed_play_options(plays, change, changes):
     return options
 
 
-def attach_plays(changes, plays):
-    """Add the play behind each headline change: 'play' when exactly one fits, 'play_options' for a short list."""
+def attach_plays(changes, plays, before=None):
+    """Add the play behind each headline change: 'play' when exactly one fits, 'play_options' for a short list.
+
+    `plays` is ESPN's play list now and `before` is the copy saved earlier, if there is one.
+    """
     if not plays:
         return
     for change in changes:
-        if change["stat"] not in HEADLINE_STATS:
+        if change["stat"] not in HEADLINE_STATS or change.get("play"):
             continue
-        source = change
-        if change["delta"] > 0:
-            # A stat that moved here from one other player comes from that player's play.
-            givers = [c for c in changes if c["stat"] == change["stat"] and c["delta"] == -change["delta"]
-                      and c["player_id"] != change["player_id"]]
-            if len(givers) != 1:
-                continue
-            source = givers[0]
-        options = ["%s, %s" % (p["when"], p["text"]) for p in removed_play_options(plays, source, changes)]
+        found = changed_play_options(before, plays, change)
+        if not found:
+            source = change
+            if change["delta"] > 0:
+                # A stat that moved here from one other player comes from that player's play.
+                givers = [c for c in changes if c["stat"] == change["stat"] and c["delta"] == -change["delta"]
+                          and c["player_id"] != change["player_id"]]
+                source = givers[0] if len(givers) == 1 else None
+            found = removed_play_options(plays, source, changes) if source else []
+        options = ["%s, %s" % (p["when"], p["text"]) for p in found]
         if len(options) == 1:
             change["play"] = options[0]
+            change.pop("play_options", None)
         elif 1 < len(options) <= PLAY_OPTIONS_MAX:
             change["play_options"] = options
 
@@ -605,6 +635,14 @@ def dump_game(game):
     return "\n".join(lines) + "\n"
 
 
+def dump_plays(plays):
+    """Play list file text with one play per line."""
+    rows = [json.dumps({"when": p["when"], "text": p["text"],
+                        "credits": sorted([pid, stat, amount] for (pid, stat), amount in p["credits"].items())},
+                       sort_keys=True, ensure_ascii=False) for p in plays]
+    return "[\n" + ",\n".join(rows) + "\n]\n"
+
+
 def write_if_changed(path, text):
     try:
         with open(path, encoding="utf-8") as fh:
@@ -620,10 +658,12 @@ def write_if_changed(path, text):
 class Tracker:
     def __init__(self, base_dir, fetch=fetch_json, now=None, notifier=None, x_search=None):
         self.games_dir = os.path.join(base_dir, "data", "games")
+        self.plays_dir = os.path.join(base_dir, "data", "plays")
         self.state_path = os.path.join(base_dir, "data", "state.json")
         self.corrections_path = os.path.join(base_dir, "data", "corrections.jsonl")
         self.corrections_log = os.path.join(base_dir, "logs", "corrections.log")
         os.makedirs(self.games_dir, exist_ok=True)
+        os.makedirs(self.plays_dir, exist_ok=True)
         os.makedirs(os.path.dirname(self.corrections_log), exist_ok=True)
         self.fetch = fetch
         self.now = now or (lambda: datetime.now(timezone.utc))
@@ -646,8 +686,26 @@ class Tracker:
     def save_game(self, game):
         write_if_changed(os.path.join(self.games_dir, game["game_id"] + ".json"), dump_game(game))
 
+    def load_plays(self, game):
+        """The play list saved for this game, or None if there isn't one yet."""
+        try:
+            with open(os.path.join(self.plays_dir, game["game_id"] + ".json"), encoding="utf-8") as fh:
+                rows = json.load(fh)
+        except FileNotFoundError:
+            return None
+        return [{"when": r["when"], "text": r["text"],
+                 "credits": {(pid, stat): amount for pid, stat, amount in r["credits"]}} for r in rows]
+
+    def save_plays(self, game, plays):
+        if plays:                                   # never replace a saved list with an empty one
+            write_if_changed(os.path.join(self.plays_dir, game["game_id"] + ".json"), dump_plays(plays))
+
     def drop_game(self, game):
         os.remove(os.path.join(self.games_dir, game["game_id"] + ".json"))
+        try:
+            os.remove(os.path.join(self.plays_dir, game["game_id"] + ".json"))
+        except FileNotFoundError:
+            pass
         log.info("Finished watching %s (%s)", game_label(game), game_date(game))
 
     def load_state(self):
@@ -746,15 +804,17 @@ class Tracker:
 
         if not game["players"]:
             game["players"] = new["players"]
+            self.save_plays(game, new["plays"])
             log.info("Saved starting box score for %s (%d players)", game_label(game), len(new["players"]))
             return []
 
+        saved_plays = self.load_plays(game)
         found = diff_players(game["players"], new["players"])
-        attach_plays(found, new["plays"])
+        attach_plays(found, new["plays"], saved_plays)
         changes = {(c["player_id"], c["stat"]): c for c in found}
 
         # Settle changes seen on an earlier run: still there = confirmed, flipped back = cancelled.
-        confirmed, still_pending = [], []
+        confirmed, still_pending, cancelled = [], [], False
         for held in game["pending"]:
             player = new["players"].get(held["player_id"])
             if player is None:                      # player missing from this fetch: decide next run
@@ -765,6 +825,7 @@ class Tracker:
             if current == held["new"]:
                 confirmed.append(held)
             else:
+                cancelled = True
                 self._append_record(game, held, "cancelled", now)
                 self.counts["cancelled"] += 1
                 log.info("CANCELLED %s: %s (now %d)", game_label(game), describe(held), current)
@@ -782,6 +843,13 @@ class Tracker:
             self.counts["pending"] += 1
             log.info("CHANGE SEEN %s: %s (waiting one more check to confirm)", game_label(game), describe(change))
         game["pending"] = still_pending
+
+        # ESPN sometimes corrects its play list a check after the box score, so look once more.
+        attach_plays(confirmed, new["plays"], saved_plays)
+        # The saved play list moves on only once every change is settled, so it always shows
+        # the game as it was scored before any change still being worked out.
+        if not still_pending and (saved_plays is None or confirmed or cancelled):
+            self.save_plays(game, new["plays"])
 
         merged = dict(game["players"])              # keep last known stats for players missing this time
         merged.update(new["players"])
