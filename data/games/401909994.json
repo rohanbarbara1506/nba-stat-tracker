@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-17T02:37:11+00:00",
  "away": {"abbr": "ORL", "name": "Magic", "score": 115},
  "home": {"abbr": "BOS", "name": "Celtics", "score": 105},
- "pending": [{"delta": 1, "detected_utc": "2026-11-17T02:51:34+00:00", "minutes_after_final": 14, "new": 2, "note": "moved from Derrick White", "old": 1, "play": "Q4 1:07, Franz Wagner bad pass turnover (Jayson Tatum steals)", "player_id": "4065648", "player_name": "Jayson Tatum", "stat": "steals", "team": "BOS"}, {"delta": -1, "detected_utc": "2026-11-17T02:51:34+00:00", "minutes_after_final": 14, "new": 0, "note": "moved to Jayson Tatum", "old": 1, "play": "Q4 1:07, Franz Wagner bad pass turnover (Derrick White steals)", "player_id": "3078576", "player_name": "Derrick White", "stat": "steals", "team": "BOS"}],
+ "pending": [],
  "players": {
   "4702745": {"name": "Amari Williams", "stats": {}, "team": "BOS"},
   "4593841": {"name": "Baylor Scheierman", "stats": {"assists": 1, "blocks": 0, "defensiveRebounds": 0, "fieldGoalsAttempted": 2, "fieldGoalsMade": 0, "fouls": 4, "freeThrowsAttempted": 0, "freeThrowsMade": 0, "offensiveRebounds": 1, "points": 0, "rebounds": 1, "steals": 3, "threePointFieldGoalsAttempted": 2, "threePointFieldGoalsMade": 0, "turnovers": 0}, "team": "BOS"},
