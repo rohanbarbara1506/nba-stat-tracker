@@ -258,5 +258,5 @@
 {"credits": [["4433149", "fieldGoalsMade", 1], ["4433149", "points", 3], ["4433149", "threePointFieldGoalsMade", 1]], "text": "LJ Cryer makes 25-foot three point jumper", "when": "Q4 1:12"},
 {"credits": [["4703396", "defensiveRebounds", 1], ["4703396", "rebounds", 1]], "text": "Graham Ike defensive rebound", "when": "Q4 0:49.4"},
 {"credits": [["4712862", "defensiveRebounds", 1], ["4712862", "rebounds", 1]], "text": "Malik Dia defensive rebound", "when": "Q4 0:40.5"},
-{"credits": [["4433149", "assists", 1], ["4703396", "fieldGoalsMade", 1], ["4703396", "points", 2]], "text": "Graham Ike makes dunk (LJ Cryer assists)", "when": "Q4 0:5.0"}
+{"credits": [["4433149", "assists", 1], ["4703396", "fieldGoalsMade", 1], ["4703396", "points", 2]], "text": "Graham Ike makes driving dunk (LJ Cryer assists)", "when": "Q4 0:5.0"}
 ]
