@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-17T04:27:34+00:00",
  "away": {"abbr": "PHX", "name": "Suns", "score": 117},
  "home": {"abbr": "DEN", "name": "Nuggets", "score": 105},
- "pending": [{"delta": 1, "detected_utc": "2026-11-17T04:42:02+00:00", "minutes_after_final": 14, "new": 2, "note": "", "old": 1, "play": "Q4 0:19.5, Christian Braun bad pass turnover", "player_id": "4431767", "player_name": "Christian Braun", "stat": "turnovers", "team": "DEN"}],
+ "pending": [],
  "players": {
   "3064290": {"name": "Aaron Gordon", "stats": {"assists": 1, "blocks": 0, "defensiveRebounds": 1, "fieldGoalsAttempted": 6, "fieldGoalsMade": 4, "fouls": 3, "freeThrowsAttempted": 2, "freeThrowsMade": 1, "offensiveRebounds": 0, "points": 11, "rebounds": 1, "steals": 0, "threePointFieldGoalsAttempted": 3, "threePointFieldGoalsMade": 2, "turnovers": 2}, "team": "DEN"},
   "4065813": {"name": "Alpha Diallo", "stats": {}, "team": "DEN"},

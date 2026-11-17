@@ -232,6 +232,7 @@
 {"credits": [["3136193", "freeThrowsMade", 1], ["3136193", "points", 1]], "text": "Devin Booker makes free throw 1 of 2", "when": "Q4 0:33.9"},
 {"credits": [["3136193", "freeThrowsMade", 1], ["3136193", "points", 1]], "text": "Devin Booker makes free throw 2 of 2", "when": "Q4 0:33.9"},
 {"credits": [["4431767", "offensiveRebounds", 1], ["4431767", "rebounds", 1]], "text": "Christian Braun offensive rebound", "when": "Q4 0:22.6"},
+{"credits": [["4431767", "turnovers", 1]], "text": "Christian Braun bad pass turnover", "when": "Q4 0:19.5"},
 {"credits": [["3136193", "freeThrowsMade", 1], ["3136193", "points", 1]], "text": "Devin Booker makes free throw 1 of 2", "when": "Q4 0:17.3"},
 {"credits": [["3136193", "freeThrowsMade", 1], ["3136193", "points", 1]], "text": "Devin Booker makes free throw 2 of 2", "when": "Q4 0:17.3"},
 {"credits": [["3136193", "defensiveRebounds", 1], ["3136193", "rebounds", 1]], "text": "Devin Booker defensive rebound", "when": "Q4 0:10.0"}
