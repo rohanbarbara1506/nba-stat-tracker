@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-19T02:40:16+00:00",
  "away": {"abbr": "MEM", "name": "Grizzlies", "score": 124},
  "home": {"abbr": "CLE", "name": "Cavaliers", "score": 121},
- "pending": [{"delta": 1, "detected_utc": "2026-11-19T03:09:04+00:00", "minutes_after_final": 28, "new": 19, "note": "", "old": 18, "play": "Q4 0:2.3, Cedric Coward makes free throw 1 of 2", "player_id": "4903027", "player_name": "Cedric Coward", "stat": "points", "team": "MEM"}, {"delta": 1, "detected_utc": "2026-11-19T03:09:04+00:00", "minutes_after_final": 28, "new": 3, "note": "", "old": 2, "player_id": "4903027", "player_name": "Cedric Coward", "stat": "freeThrowsMade", "team": "MEM"}, {"delta": 1, "detected_utc": "2026-11-19T03:09:04+00:00", "minutes_after_final": 28, "new": 5, "note": "", "old": 4, "player_id": "4903027", "player_name": "Cedric Coward", "stat": "freeThrowsAttempted", "team": "MEM"}],
+ "pending": [],
  "players": {
   "4701233": {"name": "Craig Porter Jr.", "stats": {"assists": 1, "blocks": 2, "defensiveRebounds": 1, "fieldGoalsAttempted": 4, "fieldGoalsMade": 0, "fouls": 1, "freeThrowsAttempted": 2, "freeThrowsMade": 2, "offensiveRebounds": 2, "points": 2, "rebounds": 3, "steals": 0, "threePointFieldGoalsAttempted": 1, "threePointFieldGoalsMade": 0, "turnovers": 0}, "team": "CLE"},
   "3908809": {"name": "Donovan Mitchell", "stats": {"assists": 3, "blocks": 0, "defensiveRebounds": 2, "fieldGoalsAttempted": 27, "fieldGoalsMade": 14, "fouls": 3, "freeThrowsAttempted": 4, "freeThrowsMade": 4, "offensiveRebounds": 2, "points": 34, "rebounds": 4, "steals": 1, "threePointFieldGoalsAttempted": 9, "threePointFieldGoalsMade": 2, "turnovers": 3}, "team": "CLE"},
