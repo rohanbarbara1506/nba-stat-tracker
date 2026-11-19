@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-19T05:19:09+00:00",
  "away": {"abbr": "BOS", "name": "Celtics", "score": 101},
  "home": {"abbr": "DEN", "name": "Nuggets", "score": 105},
- "pending": [{"delta": -1, "detected_utc": "2026-11-19T06:02:29+00:00", "minutes_after_final": 43, "new": 22, "note": "", "old": 23, "player_id": "4065648", "player_name": "Jayson Tatum", "stat": "fieldGoalsAttempted", "team": "BOS"}, {"delta": -1, "detected_utc": "2026-11-19T06:02:29+00:00", "minutes_after_final": 43, "new": 8, "note": "", "old": 9, "player_id": "4065648", "player_name": "Jayson Tatum", "stat": "threePointFieldGoalsAttempted", "team": "BOS"}],
+ "pending": [],
  "players": {
   "4593841": {"name": "Baylor Scheierman", "stats": {"assists": 1, "blocks": 0, "defensiveRebounds": 1, "fieldGoalsAttempted": 4, "fieldGoalsMade": 0, "fouls": 1, "freeThrowsAttempted": 0, "freeThrowsMade": 0, "offensiveRebounds": 0, "points": 0, "rebounds": 1, "steals": 2, "threePointFieldGoalsAttempted": 2, "threePointFieldGoalsMade": 0, "turnovers": 0}, "team": "BOS"},
   "5142621": {"name": "Chris Cenac Jr.", "stats": {"assists": 0, "blocks": 1, "defensiveRebounds": 5, "fieldGoalsAttempted": 3, "fieldGoalsMade": 2, "fouls": 4, "freeThrowsAttempted": 2, "freeThrowsMade": 1, "offensiveRebounds": 1, "points": 6, "rebounds": 6, "steals": 0, "threePointFieldGoalsAttempted": 1, "threePointFieldGoalsMade": 1, "turnovers": 0}, "team": "BOS"},
