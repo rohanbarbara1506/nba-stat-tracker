@@ -1,14 +1,14 @@
 {
- "notify_count": 3,
+ "notify_count": 7,
  "notify_date": "2026-11-20",
  "outbox": [],
  "slow_check": "2026-11-20T19",
  "sweep_date": "2026-11-20",
  "x_reads": {
   "day": "2026-11-20",
-  "day_count": 23,
+  "day_count": 39,
   "month": "2026-11",
-  "month_count": 155,
-  "total": 155
+  "month_count": 171,
+  "total": 171
  }
 }

@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-19T03:09:04+00:00",
  "away": {"abbr": "MIL", "name": "Bucks", "score": 130},
  "home": {"abbr": "MIA", "name": "Heat", "score": 137},
- "pending": [{"delta": 1, "detected_utc": "2026-11-20T19:09:08+00:00", "minutes_after_final": 2400, "new": 1, "note": "moved from Simone Fontecchio", "old": 0, "play_options": ["Q2 6:46, Jaime Jaquez Jr. bad pass turnover (Simone Fontecchio steals)", "Q4 6:55, Nate Ament lost ball turnover (Simone Fontecchio steals)"], "player_id": "3059319", "player_name": "Andrew Wiggins", "stat": "steals", "team": "MIA"}, {"delta": -1, "detected_utc": "2026-11-20T19:09:08+00:00", "minutes_after_final": 2400, "new": 1, "note": "moved to Andrew Wiggins", "old": 2, "play_options": ["Q2 6:46, Jaime Jaquez Jr. bad pass turnover (Simone Fontecchio steals)", "Q4 6:55, Nate Ament lost ball turnover (Simone Fontecchio steals)"], "player_id": "3899664", "player_name": "Simone Fontecchio", "stat": "steals", "team": "MIA"}],
+ "pending": [],
  "players": {
   "3059319": {"name": "Andrew Wiggins", "stats": {"assists": 2, "blocks": 0, "defensiveRebounds": 2, "fieldGoalsAttempted": 5, "fieldGoalsMade": 2, "fouls": 3, "freeThrowsAttempted": 6, "freeThrowsMade": 6, "offensiveRebounds": 0, "points": 11, "rebounds": 2, "steals": 1, "threePointFieldGoalsAttempted": 4, "threePointFieldGoalsMade": 1, "turnovers": 1}, "team": "MIA"},
   "4066261": {"name": "Bam Adebayo", "stats": {"assists": 2, "blocks": 0, "defensiveRebounds": 2, "fieldGoalsAttempted": 15, "fieldGoalsMade": 7, "fouls": 1, "freeThrowsAttempted": 13, "freeThrowsMade": 9, "offensiveRebounds": 2, "points": 26, "rebounds": 4, "steals": 2, "threePointFieldGoalsAttempted": 8, "threePointFieldGoalsMade": 3, "turnovers": 3}, "team": "MIA"},
