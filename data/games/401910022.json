@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-20T03:35:52+00:00",
  "away": {"abbr": "LAC", "name": "Clippers", "score": 112},
  "home": {"abbr": "SAS", "name": "Spurs", "score": 124},
- "pending": [{"delta": -1, "detected_utc": "2026-11-20T03:50:24+00:00", "minutes_after_final": 14, "new": 1, "note": "", "old": 2, "player_id": "2991139", "player_name": "Kris Dunn", "stat": "blocks", "team": "LAC"}],
+ "pending": [],
  "players": {
   "5075626": {"name": "Baba Miller", "stats": {"assists": 0, "blocks": 0, "defensiveRebounds": 0, "fieldGoalsAttempted": 0, "fieldGoalsMade": 0, "fouls": 0, "freeThrowsAttempted": 0, "freeThrowsMade": 0, "offensiveRebounds": 0, "points": 0, "rebounds": 0, "steals": 0, "threePointFieldGoalsAttempted": 0, "threePointFieldGoalsMade": 0, "turnovers": 0}, "team": "LAC"},
   "3448": {"name": "Brook Lopez", "stats": {"assists": 4, "blocks": 0, "defensiveRebounds": 3, "fieldGoalsAttempted": 10, "fieldGoalsMade": 8, "fouls": 2, "freeThrowsAttempted": 2, "freeThrowsMade": 2, "offensiveRebounds": 0, "points": 23, "rebounds": 3, "steals": 1, "threePointFieldGoalsAttempted": 7, "threePointFieldGoalsMade": 5, "turnovers": 3}, "team": "LAC"},
