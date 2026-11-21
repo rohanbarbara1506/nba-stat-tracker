@@ -97,7 +97,7 @@
 {"credits": [["3133602", "assists", 1], ["5105839", "fieldGoalsMade", 1], ["5105839", "points", 3], ["5105839", "threePointFieldGoalsMade", 1]], "text": "Brice Sensabaugh makes 24-foot three point jumper (Svi Mykhailiuk assists)", "when": "Q2 5:49"},
 {"credits": [["3136193", "turnovers", 1], ["4432811", "steals", 1]], "text": "Devin Booker lost ball turnover (Josh Green steals)", "when": "Q2 5:42"},
 {"credits": [["4601023", "defensiveRebounds", 1], ["4601023", "rebounds", 1]], "text": "Oso Ighodaro defensive rebound", "when": "Q2 5:38"},
-{"credits": [["4066383", "fieldGoalsMade", 1], ["4066383", "points", 3], ["4066383", "threePointFieldGoalsMade", 1], ["4601023", "assists", 1]], "text": "Miles Bridges makes 24-foot running jump shot (Oso Ighodaro assists)", "when": "Q2 5:34"},
+{"credits": [["4066383", "fieldGoalsMade", 1], ["4066383", "points", 3], ["4066383", "threePointFieldGoalsMade", 1], ["4601023", "assists", 1]], "text": "Miles Bridges makes 24-foot running pullup jump shot (Oso Ighodaro assists)", "when": "Q2 5:34"},
 {"credits": [["4397077", "freeThrowsMade", 1], ["4397077", "points", 1]], "text": "Jaxson Hayes makes free throw 1 of 2", "when": "Q2 5:21"},
 {"credits": [["4397077", "freeThrowsMade", 1], ["4397077", "points", 1]], "text": "Jaxson Hayes makes free throw 2 of 2", "when": "Q2 5:21"},
 {"credits": [["4437244", "freeThrowsMade", 1], ["4437244", "points", 1]], "text": "Jalen Green makes free throw 1 of 2", "when": "Q2 5:14"},
