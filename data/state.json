@@ -3,7 +3,7 @@
  "notify_count": 3,
  "notify_date": "2026-11-21",
  "outbox": [],
- "slow_check": "2026-11-21T15",
+ "slow_check": "2026-11-21T19",
  "sweep_date": "2026-11-21",
  "x_reads": {
   "day": "2026-11-21",
