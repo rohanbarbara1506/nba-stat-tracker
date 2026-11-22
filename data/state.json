@@ -1,15 +1,15 @@
 {
  "limit_alert": "x-limit-2026-11-20",
- "notify_count": 3,
- "notify_date": "2026-11-21",
+ "notify_count": 1,
+ "notify_date": "2026-11-22",
  "outbox": [],
- "slow_check": "2026-11-22T11",
- "sweep_date": "2026-11-21",
+ "slow_check": "2026-11-22T15",
+ "sweep_date": "2026-11-22",
  "x_reads": {
-  "day": "2026-11-21",
-  "day_count": 24,
+  "day": "2026-11-22",
+  "day_count": 10,
   "month": "2026-11",
-  "month_count": 195,
-  "total": 195
+  "month_count": 205,
+  "total": 205
  }
 }
