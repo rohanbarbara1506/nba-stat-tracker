@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-22T03:35:25+00:00",
  "away": {"abbr": "NOP", "name": "Pelicans", "score": 91},
  "home": {"abbr": "SAS", "name": "Spurs", "score": 114},
- "pending": [{"delta": -1, "detected_utc": "2026-11-22T03:49:53+00:00", "minutes_after_final": 14, "new": 8, "note": "moved to Derik Queen", "old": 9, "player_id": "4277813", "player_name": "Herbert Jones", "stat": "fieldGoalsAttempted", "team": "NOP"}, {"delta": 1, "detected_utc": "2026-11-22T03:49:53+00:00", "minutes_after_final": 14, "new": 16, "note": "moved from Herbert Jones", "old": 15, "player_id": "4869780", "player_name": "Derik Queen", "stat": "fieldGoalsAttempted", "team": "NOP"}, {"delta": 1, "detected_utc": "2026-11-22T03:49:53+00:00", "minutes_after_final": 14, "new": 7, "note": "", "old": 6, "player_id": "5061568", "player_name": "Carter Bryant", "stat": "threePointFieldGoalsAttempted", "team": "SAS"}],
+ "pending": [],
  "players": {
   "5170947": {"name": "AJ Johnson", "stats": {"assists": 0, "blocks": 0, "defensiveRebounds": 0, "fieldGoalsAttempted": 2, "fieldGoalsMade": 0, "fouls": 0, "freeThrowsAttempted": 0, "freeThrowsMade": 0, "offensiveRebounds": 0, "points": 0, "rebounds": 0, "steals": 0, "threePointFieldGoalsAttempted": 1, "threePointFieldGoalsMade": 0, "turnovers": 0}, "team": "NOP"},
   "3442": {"name": "DeAndre Jordan", "stats": {}, "team": "NOP"},
