@@ -21,7 +21,7 @@
 {"credits": [["4873138", "turnovers", 1]], "text": "Ace Bailey traveling turnover", "when": "Q1 7:06"},
 {"credits": [["6442", "fieldGoalsMade", 1], ["6442", "points", 3], ["6442", "threePointFieldGoalsMade", 1]], "text": "Kyrie Irving makes 28-foot three pointer", "when": "Q1 6:55"},
 {"credits": [["4278594", "steals", 1], ["4873138", "turnovers", 1]], "text": "Ace Bailey bad pass turnover (Naji Marshall steals)", "when": "Q1 6:38"},
-{"credits": [["4278594", "assists", 1], ["6442", "fieldGoalsMade", 1], ["6442", "points", 3], ["6442", "threePointFieldGoalsMade", 1]], "text": "Kyrie Irving makes 25-foot three pointer (Naji Marshall assists)", "when": "Q1 6:35"},
+{"credits": [["4278594", "assists", 1], ["6442", "fieldGoalsMade", 1], ["6442", "points", 3], ["6442", "threePointFieldGoalsMade", 1]], "text": "Kyrie Irving makes 25-foot running pullup jump shot (Naji Marshall assists)", "when": "Q1 6:35"},
 {"credits": [["4397077", "fieldGoalsMade", 1], ["4397077", "points", 2], ["5041955", "assists", 1]], "text": "Jaxson Hayes makes alley oop layup (Darryn Peterson assists)", "when": "Q1 6:07"},
 {"credits": [["4433627", "defensiveRebounds", 1], ["4433627", "rebounds", 1]], "text": "Keyonte George defensive rebound", "when": "Q1 5:59"},
 {"credits": [["4873153", "defensiveRebounds", 1], ["4873153", "rebounds", 1]], "text": "Morez Johnson Jr. defensive rebound", "when": "Q1 5:45"},

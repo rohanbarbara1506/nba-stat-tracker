@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-23T02:33:31+00:00",
  "away": {"abbr": "DAL", "name": "Mavericks", "score": 116},
  "home": {"abbr": "UTA", "name": "Jazz", "score": 114},
- "pending": [{"delta": -1, "detected_utc": "2026-11-23T02:47:58+00:00", "minutes_after_final": 14, "new": 0, "note": "", "old": 1, "player_id": "5211175", "player_name": "Zaccharie Risacher", "stat": "steals", "team": "DAL"}, {"delta": -1, "detected_utc": "2026-11-23T02:47:58+00:00", "minutes_after_final": 14, "new": 0, "note": "", "old": 1, "player_id": "4896372", "player_name": "Walter Clayton Jr.", "stat": "blocks", "team": "DAL"}],
+ "pending": [],
  "players": {
   "3138160": {"name": "Caleb Martin", "stats": {"assists": 4, "blocks": 0, "defensiveRebounds": 4, "fieldGoalsAttempted": 9, "fieldGoalsMade": 5, "fouls": 1, "freeThrowsAttempted": 0, "freeThrowsMade": 0, "offensiveRebounds": 2, "points": 13, "rebounds": 6, "steals": 4, "threePointFieldGoalsAttempted": 5, "threePointFieldGoalsMade": 3, "turnovers": 0}, "team": "DAL"},
   "5041939": {"name": "Cooper Flagg", "stats": {"assists": 4, "blocks": 0, "defensiveRebounds": 1, "fieldGoalsAttempted": 17, "fieldGoalsMade": 8, "fouls": 2, "freeThrowsAttempted": 10, "freeThrowsMade": 9, "offensiveRebounds": 2, "points": 28, "rebounds": 3, "steals": 1, "threePointFieldGoalsAttempted": 7, "threePointFieldGoalsMade": 3, "turnovers": 5}, "team": "DAL"},
