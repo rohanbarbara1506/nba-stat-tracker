@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-24T05:37:15+00:00",
  "away": {"abbr": "UTA", "name": "Jazz", "score": 94},
  "home": {"abbr": "LAL", "name": "Lakers", "score": 109},
- "pending": [{"delta": 1, "detected_utc": "2026-11-24T05:51:44+00:00", "minutes_after_final": 14, "new": 3, "note": "", "old": 2, "player_id": "5113969", "player_name": "Cameron Carr", "stat": "threePointFieldGoalsAttempted", "team": "LAL"}],
+ "pending": [],
  "players": {
   "5060631": {"name": "Adou Thiero", "stats": {}, "team": "LAL"},
   "4683774": {"name": "Bronny James", "stats": {}, "team": "LAL"},
