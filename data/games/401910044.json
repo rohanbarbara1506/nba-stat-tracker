@@ -4,11 +4,11 @@
  "final_seen_utc": "2026-11-24T05:37:15+00:00",
  "away": {"abbr": "UTA", "name": "Jazz", "score": 94},
  "home": {"abbr": "LAL", "name": "Lakers", "score": 109},
- "pending": [],
+ "pending": [{"delta": 1, "detected_utc": "2026-11-24T05:51:44+00:00", "minutes_after_final": 14, "new": 3, "note": "", "old": 2, "player_id": "5113969", "player_name": "Cameron Carr", "stat": "threePointFieldGoalsAttempted", "team": "LAL"}],
  "players": {
   "5060631": {"name": "Adou Thiero", "stats": {}, "team": "LAL"},
   "4683774": {"name": "Bronny James", "stats": {}, "team": "LAL"},
-  "5113969": {"name": "Cameron Carr", "stats": {"assists": 0, "blocks": 0, "defensiveRebounds": 0, "fieldGoalsAttempted": 6, "fieldGoalsMade": 3, "fouls": 1, "freeThrowsAttempted": 2, "freeThrowsMade": 2, "offensiveRebounds": 0, "points": 9, "rebounds": 0, "steals": 0, "threePointFieldGoalsAttempted": 2, "threePointFieldGoalsMade": 1, "turnovers": 1}, "team": "LAL"},
+  "5113969": {"name": "Cameron Carr", "stats": {"assists": 0, "blocks": 0, "defensiveRebounds": 0, "fieldGoalsAttempted": 6, "fieldGoalsMade": 3, "fouls": 1, "freeThrowsAttempted": 2, "freeThrowsMade": 2, "offensiveRebounds": 0, "points": 9, "rebounds": 0, "steals": 0, "threePointFieldGoalsAttempted": 3, "threePointFieldGoalsMade": 1, "turnovers": 1}, "team": "LAL"},
   "5105817": {"name": "Carson Cooper", "stats": {}, "team": "LAL"},
   "4277811": {"name": "Collin Sexton", "stats": {"assists": 4, "blocks": 1, "defensiveRebounds": 1, "fieldGoalsAttempted": 10, "fieldGoalsMade": 3, "fouls": 4, "freeThrowsAttempted": 5, "freeThrowsMade": 4, "offensiveRebounds": 1, "points": 12, "rebounds": 2, "steals": 1, "threePointFieldGoalsAttempted": 6, "threePointFieldGoalsMade": 2, "turnovers": 2}, "team": "LAL"},
   "4868423": {"name": "Jaden Hardy", "stats": {}, "team": "LAL"},
