@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-24T03:02:05+00:00",
  "away": {"abbr": "OKC", "name": "Thunder", "score": 120},
  "home": {"abbr": "IND", "name": "Pacers", "score": 125},
- "pending": [{"delta": 1, "detected_utc": "2026-11-25T23:00:15+00:00", "minutes_after_final": 2638, "new": 1, "note": "moved from Braden Smith", "old": 0, "play": "Q4 4:06, Shai Gilgeous-Alexander lost ball turnover (Braden Smith steals)", "player_id": "3133603", "player_name": "Kelly Oubre Jr.", "stat": "steals", "team": "IND"}, {"delta": -1, "detected_utc": "2026-11-25T23:00:15+00:00", "minutes_after_final": 2638, "new": 0, "note": "moved to Kelly Oubre Jr.", "old": 1, "play": "Q4 4:06, Shai Gilgeous-Alexander lost ball turnover (Braden Smith steals)", "player_id": "5105854", "player_name": "Braden Smith", "stat": "steals", "team": "IND"}],
+ "pending": [],
  "players": {
   "4396909": {"name": "Aaron Nesmith", "stats": {}, "team": "IND"},
   "4395712": {"name": "Andrew Nembhard", "stats": {"assists": 6, "blocks": 0, "defensiveRebounds": 2, "fieldGoalsAttempted": 15, "fieldGoalsMade": 6, "fouls": 2, "freeThrowsAttempted": 2, "freeThrowsMade": 1, "offensiveRebounds": 0, "points": 15, "rebounds": 2, "steals": 2, "threePointFieldGoalsAttempted": 6, "threePointFieldGoalsMade": 2, "turnovers": 1}, "team": "IND"},
