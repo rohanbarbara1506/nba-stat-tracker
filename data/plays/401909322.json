@@ -220,7 +220,7 @@
 {"credits": [["3064514", "fieldGoalsMade", 1], ["3064514", "points", 2], ["4278104", "assists", 1]], "text": "Julius Randle makes 1-foot running dunk (Michael Porter Jr. assists)", "when": "Q4 2:11"},
 {"credits": [["4395725", "fieldGoalsMade", 1], ["4395725", "points", 2]], "text": "Tyler Herro makes driving layup", "when": "Q4 1:50"},
 {"credits": [["4395725", "steals", 1], ["5175643", "turnovers", 1]], "text": "Egor Demin bad pass turnover (Tyler Herro steals)", "when": "Q4 1:38"},
-{"credits": [["3134907", "fieldGoalsMade", 1], ["3134907", "points", 2], ["4395725", "assists", 1]], "text": "Kyle Kuzma makes 2-foot alley oop dunk (Tyler Herro assists)", "when": "Q4 1:35"},
+{"credits": [["3134907", "fieldGoalsMade", 1], ["3134907", "points", 2], ["4395725", "assists", 1]], "text": "Kyle Kuzma makes alley oop layup (Tyler Herro assists)", "when": "Q4 1:35"},
 {"credits": [["5175643", "freeThrowsMade", 1], ["5175643", "points", 1]], "text": "Egor Demin makes free throw 1 of 2", "when": "Q4 1:28"},
 {"credits": [["5175643", "freeThrowsMade", 1], ["5175643", "points", 1]], "text": "Egor Demin makes free throw 2 of 2", "when": "Q4 1:28"},
 {"credits": [["4395725", "turnovers", 1], ["4432194", "steals", 1]], "text": "Tyler Herro lost ball turnover (Day'Ron Sharpe steals)", "when": "Q4 1:17"},
@@ -232,7 +232,7 @@
 {"credits": [["5082206", "assists", 1], ["5105623", "fieldGoalsMade", 1], ["5105623", "points", 3], ["5105623", "threePointFieldGoalsMade", 1]], "text": "Kel'el Ware makes 26-foot jump bank shot (Brayden Burries assists)", "when": "Q4 0:45.5"},
 {"credits": [["4395725", "steals", 1], ["5175643", "turnovers", 1]], "text": "Egor Demin bad pass turnover (Tyler Herro steals)", "when": "Q4 0:37.6"},
 {"credits": [["4395725", "fieldGoalsMade", 1], ["4395725", "points", 2]], "text": "Tyler Herro makes 1-foot running jump shot", "when": "Q4 0:33.4"},
-{"credits": [["5175643", "turnovers", 1]], "text": "Egor Demin bad pass turnover", "when": "Q4 0:26.5"},
+{"credits": [["5175643", "turnovers", 1]], "text": "Egor Demin out of bounds bad pass turnover", "when": "Q4 0:26.5"},
 {"credits": [["5175643", "freeThrowsMade", 1], ["5175643", "points", 1]], "text": "Egor Demin makes free throw 2 of 2", "when": "Q4 0:14.7"},
 {"credits": [["4432848", "fieldGoalsMade", 1], ["4432848", "points", 2], ["5082206", "assists", 1]], "text": "Jaime Jaquez Jr. makes driving layup (Brayden Burries assists)", "when": "Q4 0:7.4"}
 ]
