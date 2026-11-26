@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-26T02:58:35+00:00",
  "away": {"abbr": "CLE", "name": "Cavaliers", "score": 102},
  "home": {"abbr": "NYK", "name": "Knicks", "score": 121},
- "pending": [{"delta": -1, "detected_utc": "2026-11-26T03:13:04+00:00", "minutes_after_final": 14, "new": 11, "note": "", "old": 12, "play": "Q4 1:15, Jose Alvarado makes 9-foot step back jumpshot (Josh Hart assists)", "player_id": "3062679", "player_name": "Josh Hart", "stat": "assists", "team": "NYK"}, {"delta": -1, "detected_utc": "2026-11-26T03:13:04+00:00", "minutes_after_final": 14, "new": 1, "note": "", "old": 2, "play": "Q4 0:37.2, Josh Hart blocks Donovan Mitchell 's 5-foot driving layup", "player_id": "3062679", "player_name": "Josh Hart", "stat": "blocks", "team": "NYK"}],
+ "pending": [],
  "players": {
   "4701233": {"name": "Craig Porter Jr.", "stats": {}, "team": "CLE"},
   "3908809": {"name": "Donovan Mitchell", "stats": {"assists": 4, "blocks": 2, "defensiveRebounds": 4, "fieldGoalsAttempted": 24, "fieldGoalsMade": 12, "fouls": 0, "freeThrowsAttempted": 8, "freeThrowsMade": 5, "offensiveRebounds": 0, "points": 30, "rebounds": 4, "steals": 4, "threePointFieldGoalsAttempted": 7, "threePointFieldGoalsMade": 1, "turnovers": 2}, "team": "CLE"},

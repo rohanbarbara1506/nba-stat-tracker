@@ -1,6 +1,6 @@
 {
  "limit_alert": "x-limit-2026-11-25",
- "notify_count": 8,
+ "notify_count": 9,
  "notify_date": "2026-11-25",
  "outbox": [],
  "slow_check": "2026-11-25T23",

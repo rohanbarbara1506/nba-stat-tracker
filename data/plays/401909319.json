@@ -225,14 +225,13 @@
 {"credits": [["3147657", "defensiveRebounds", 1], ["3147657", "rebounds", 1]], "text": "Mikal Bridges defensive rebound", "when": "Q4 2:11"},
 {"credits": [["4576087", "defensiveRebounds", 1], ["4576087", "rebounds", 1]], "text": "Peyton Watson defensive rebound", "when": "Q4 1:49"},
 {"credits": [["3136195", "defensiveRebounds", 1], ["3136195", "rebounds", 1]], "text": "Karl-Anthony Towns defensive rebound", "when": "Q4 1:39"},
-{"credits": [["3062679", "assists", 1], ["4277869", "fieldGoalsMade", 1], ["4277869", "points", 2]], "text": "Jose Alvarado makes 9-foot step back jumpshot (Josh Hart assists)", "when": "Q4 1:15"},
+{"credits": [["4277869", "fieldGoalsMade", 1], ["4277869", "points", 2]], "text": "Jose Alvarado makes 9-foot step back jumpshot", "when": "Q4 1:15"},
 {"credits": [["3934672", "defensiveRebounds", 1], ["3934672", "rebounds", 1]], "text": "Jalen Brunson defensive rebound", "when": "Q4 1:06"},
 {"credits": [["3908809", "blocks", 1]], "text": "Donovan Mitchell blocks Karl-Anthony Towns 's 4-foot driving layup", "when": "Q4 0:47.3"},
-{"credits": [["3062679", "blocks", 1]], "text": "Josh Hart blocks Donovan Mitchell 's 5-foot driving layup", "when": "Q4 0:37.2"},
 {"credits": [["3062679", "defensiveRebounds", 1], ["3062679", "rebounds", 1]], "text": "Josh Hart defensive rebound", "when": "Q4 0:37.2"},
 {"credits": [["3136195", "assists", 1], ["4277869", "fieldGoalsMade", 1], ["4277869", "points", 3], ["4277869", "threePointFieldGoalsMade", 1]], "text": "Jose Alvarado makes 23-foot three point jumper (Karl-Anthony Towns assists)", "when": "Q4 0:28.5"},
-{"credits": [["3136195", "blocks", 1]], "text": "Karl-Anthony Towns blocks Jaylon Tyson's driving layup", "when": "Q4 0:9.4"},
+{"credits": [["3136195", "blocks", 1]], "text": "Karl-Anthony Towns blocks Jaylon Tyson's layup", "when": "Q4 0:9.4"},
 {"credits": [["4277869", "defensiveRebounds", 1], ["4277869", "rebounds", 1]], "text": "Jose Alvarado defensive rebound", "when": "Q4 0:9.4"},
-{"credits": [["3062679", "fieldGoalsMade", 1], ["3062679", "points", 2], ["4277869", "assists", 1]], "text": "Josh Hart makes running jump shot (Jose Alvarado assists)", "when": "Q4 0:4.0"},
+{"credits": [["3062679", "fieldGoalsMade", 1], ["3062679", "points", 2], ["4277869", "assists", 1]], "text": "Josh Hart makes running layup (Jose Alvarado assists)", "when": "Q4 0:4.0"},
 {"credits": [["3147657", "blocks", 1]], "text": "Mikal Bridges blocks Jaylon Tyson 's 24-foot three point jumper", "when": "Q4 0:0.2"}
 ]
