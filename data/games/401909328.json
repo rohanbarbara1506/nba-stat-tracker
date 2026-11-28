@@ -4,7 +4,7 @@
  "final_seen_utc": "2026-11-28T02:59:34+00:00",
  "away": {"abbr": "PHI", "name": "76ers", "score": 111},
  "home": {"abbr": "IND", "name": "Pacers", "score": 87},
- "pending": [{"delta": 1, "detected_utc": "2026-11-28T03:14:02+00:00", "minutes_after_final": 14, "new": 2, "note": "moved from Labaron Philon Jr.", "old": 1, "play": "Q4 2:42, Jabari Walker out of bounds lost ball turnover", "player_id": "4432446", "player_name": "Jabari Walker", "stat": "turnovers", "team": "PHI"}, {"delta": -1, "detected_utc": "2026-11-28T03:14:02+00:00", "minutes_after_final": 14, "new": 1, "note": "moved to Jabari Walker", "old": 2, "play": "Q4 2:42, Labaron Philon Jr. out of bounds bad pass turnover", "player_id": "4873090", "player_name": "Labaron Philon Jr.", "stat": "turnovers", "team": "PHI"}],
+ "pending": [],
  "players": {
   "4396909": {"name": "Aaron Nesmith", "stats": {"assists": 0, "blocks": 0, "defensiveRebounds": 4, "fieldGoalsAttempted": 8, "fieldGoalsMade": 1, "fouls": 2, "freeThrowsAttempted": 4, "freeThrowsMade": 4, "offensiveRebounds": 0, "points": 6, "rebounds": 4, "steals": 2, "threePointFieldGoalsAttempted": 4, "threePointFieldGoalsMade": 0, "turnovers": 2}, "team": "IND"},
   "4395712": {"name": "Andrew Nembhard", "stats": {"assists": 3, "blocks": 0, "defensiveRebounds": 2, "fieldGoalsAttempted": 10, "fieldGoalsMade": 5, "fouls": 0, "freeThrowsAttempted": 2, "freeThrowsMade": 2, "offensiveRebounds": 2, "points": 14, "rebounds": 4, "steals": 1, "threePointFieldGoalsAttempted": 6, "threePointFieldGoalsMade": 2, "turnovers": 2}, "team": "IND"},

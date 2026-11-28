@@ -231,7 +231,7 @@
 {"credits": [["5106060", "freeThrowsMade", 1], ["5106060", "points", 1]], "text": "Jarace Walker makes free throw 2 of 2", "when": "Q4 3:27"},
 {"credits": [["3904625", "fieldGoalsMade", 1], ["3904625", "points", 2], ["4873090", "assists", 1]], "text": "Tacko Fall makes 4-foot dunk (Labaron Philon Jr. assists)", "when": "Q4 3:08"},
 {"credits": [["4432446", "defensiveRebounds", 1], ["4432446", "rebounds", 1]], "text": "Jabari Walker defensive rebound", "when": "Q4 2:56"},
-{"credits": [["4873090", "turnovers", 1]], "text": "Labaron Philon Jr. out of bounds bad pass turnover", "when": "Q4 2:42"},
+{"credits": [["4432446", "turnovers", 1]], "text": "Jabari Walker out of bounds lost ball turnover", "when": "Q4 2:42"},
 {"credits": [["4711297", "defensiveRebounds", 1], ["4711297", "rebounds", 1]], "text": "Justin Edwards defensive rebound", "when": "Q4 2:36"},
 {"credits": [["3904625", "fieldGoalsMade", 1], ["3904625", "points", 2], ["4351851", "assists", 1]], "text": "Tacko Fall makes 2-foot dunk (Anfernee Simons assists)", "when": "Q4 2:25"},
 {"credits": [["4351851", "defensiveRebounds", 1], ["4351851", "rebounds", 1]], "text": "Anfernee Simons defensive rebound", "when": "Q4 2:13"},
